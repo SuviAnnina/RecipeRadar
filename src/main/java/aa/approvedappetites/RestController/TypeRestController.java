@@ -39,13 +39,13 @@ public class TypeRestController {
         return typeRepository.findById(typeId);
     }
 
-    /* Save type */
+    /* Saves type */
     @PostMapping("/types")
     public @ResponseBody Type saveTypeRest(@RequestBody Type type) {
         return typeRepository.save(type);
     }
 
-    /* Patch type by id */
+    /* Patches type by id */
     @PatchMapping("/types/{id}")
     public @ResponseBody Type patchTypeRest(@PathVariable Long typeId, @RequestBody Type updatedType) {
         Optional<Type> existingTypeOptional = typeRepository.findById(typeId);
@@ -64,7 +64,7 @@ public class TypeRestController {
 
     }
 
-    /* Delete type by id */
+    /* Deletes type by id */
     @DeleteMapping("/types/{id}")
     public ResponseEntity<String> deleteTypeByIdRest(@PathVariable("id") Long typeId) {
         Optional<Type> typeOptional = typeRepository.findById(typeId);

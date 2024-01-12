@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import aa.approvedappetites.Domain.Recipe;
 import aa.approvedappetites.Domain.RecipeRepository;
+import aa.approvedappetites.Domain.Type;
+import aa.approvedappetites.Domain.TypeRepository;
 
 @CrossOrigin
 @Controller
@@ -26,6 +28,9 @@ public class RecipeRestController {
 
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    private TypeRepository typeRepository;
 
     /* Lists all java-objects from Recipe class in JSON-list */
     @GetMapping("/recipes")
@@ -42,6 +47,11 @@ public class RecipeRestController {
     /* Saves a recipe into database */
     @PostMapping("/recipes")
     public @ResponseBody Recipe saveRecipeRest(@RequestBody Recipe recipe) {
+        long typeId = recipe.getType().getTypeId();
+        Type type = typeRepository.findById(typeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Type not found with id " + typeId));
+        recipe.setType(type);
+
         return recipeRepository.save(recipe);
     }
 
