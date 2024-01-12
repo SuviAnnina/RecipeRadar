@@ -21,6 +21,8 @@ import aa.approvedappetites.Domain.Recipe;
 import aa.approvedappetites.Domain.RecipeRepository;
 import aa.approvedappetites.Domain.Type;
 import aa.approvedappetites.Domain.TypeRepository;
+import aa.approvedappetites.Domain.User;
+import aa.approvedappetites.Domain.UserRepository;
 
 @CrossOrigin
 @Controller
@@ -31,6 +33,9 @@ public class RecipeRestController {
 
     @Autowired
     private TypeRepository typeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /* Lists all java-objects from Recipe class in JSON-list */
     @GetMapping("/recipes")
@@ -47,10 +52,18 @@ public class RecipeRestController {
     /* Saves a recipe into database */
     @PostMapping("/recipes")
     public @ResponseBody Recipe saveRecipeRest(@RequestBody Recipe recipe) {
+
+        /* saves type */
         long typeId = recipe.getType().getTypeId();
         Type type = typeRepository.findById(typeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Type not found with id " + typeId));
         recipe.setType(type);
+
+        /* saves user */
+        long userId = recipe.getUser().getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+        recipe.setUser(user);
 
         return recipeRepository.save(recipe);
     }
