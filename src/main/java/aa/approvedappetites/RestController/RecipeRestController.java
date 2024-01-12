@@ -33,13 +33,13 @@ public class RecipeRestController {
 
     /* Listaa kaikki Recipe-luokan javaoliot JSON-listaksi */
     @GetMapping("/recipes")
-    public @ResponseBody List<Recipe> recipeListRest() {
+    public @ResponseBody List<Recipe> getAllRecipesRest() {
         return (List<Recipe>) recipeRepository.findAll();
     }
 
     /* Etsii reseptin id:n perusteella ja palauttaa sen JSON-muodossa */
     @GetMapping("/recipe/{id}")
-    public @ResponseBody Optional<Recipe> findRecipeRest(@PathVariable("id") Long recipeId) {
+    public @ResponseBody Optional<Recipe> getRecipeByIdRest(@PathVariable("id") Long recipeId) {
         return recipeRepository.findById(recipeId);
     }
 
@@ -110,6 +110,18 @@ public class RecipeRestController {
         } else {
             throw new ResourceNotFoundException("Recipes not found with type " + typeName);
         }
+    }
+
+    /* Etsii reseptin nimen mukaan */
+    @GetMapping("/recipes/searchByName/{name}")
+    public @ResponseBody List<Recipe> getRecipesByName(@PathVariable("name") String searchedName) {
+        List<Recipe> recipes = recipeRepository.findByName(searchedName);
+
+        if (recipes.isEmpty()) {
+            throw new ResourceNotFoundException("No recipes found with " + searchedName);
+        }
+
+        return recipes;
     }
 
 }
