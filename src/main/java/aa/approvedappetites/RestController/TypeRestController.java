@@ -27,25 +27,25 @@ public class TypeRestController {
     @Autowired
     private TypeRepository typeRepository;
 
-    /* Listaa kaikki Type-luokan javaoliot JSON-listaksi */
+    /* Lists all Type java objects into JSON list */
     @GetMapping("/types")
-    public @ResponseBody List<Type> typeListRest() {
+    public @ResponseBody List<Type> getAllTypesRest() {
         return (List<Type>) typeRepository.findAll();
     }
 
-    /* Etsii tyypin id:n perusteella ja palauttaa sen JSON-muodossa */
+    /* Returns type by id */
     @GetMapping("/type/{id}")
-    public @ResponseBody Optional<Type> findTypeRest(@PathVariable("id") Long typeId) {
+    public @ResponseBody Optional<Type> getTypeByIdRest(@PathVariable("id") Long typeId) {
         return typeRepository.findById(typeId);
     }
 
-    /* Tallentaa uuden tyypin tietokantaan */
+    /* Save type */
     @PostMapping("/types")
     public @ResponseBody Type saveTypeRest(@RequestBody Type type) {
         return typeRepository.save(type);
     }
 
-    /* Editoi tyyppiä id:n perusteella */
+    /* Patch type by id */
     @PatchMapping("/types/{id}")
     public @ResponseBody Type patchTypeRest(@PathVariable Long typeId, @RequestBody Type updatedType) {
         Optional<Type> existingTypeOptional = typeRepository.findById(typeId);
@@ -64,7 +64,7 @@ public class TypeRestController {
 
     }
 
-    /* Poista tyyppi id:n perusteella */
+    /* Delete type by id */
     @DeleteMapping("/types/{id}")
     public ResponseEntity<String> deleteTypeByIdRest(@PathVariable("id") Long typeId) {
         Optional<Type> typeOptional = typeRepository.findById(typeId);

@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import aa.approvedappetites.Domain.Recipe;
 import aa.approvedappetites.Domain.RecipeIngredient;
 import aa.approvedappetites.Domain.RecipeIngredientRepository;
+import aa.approvedappetites.Domain.RecipeRepository;
 
 @CrossOrigin
 @Controller
@@ -27,33 +29,41 @@ public class RecipeIngredientRestController {
     @Autowired
     private RecipeIngredientRepository recipeIngredientRepository;
 
-    /* Listaa kaikki RecipeIngredient-luokan javaoliot JSON-listaksi */
+    @Autowired
+    private RecipeRepository recipeRepository;
+
+    /* Lists all RecipeIngredient java objects in JSON-list */
     @GetMapping("/recipeingredients")
-    public @ResponseBody List<RecipeIngredient> recipeIngredientListRest() {
+    public @ResponseBody List<RecipeIngredient> getAllRecipeIngredientsRest() {
         return (List<RecipeIngredient>) recipeIngredientRepository.findAll();
     }
 
-    /* Listaa kaikki tietyn reseptin ainesosat */
+    /* Lists all recipe ingredients by recipe's id */
     @GetMapping("/recipeingredients/byRecipe/{recipeId}")
-    public @ResponseBody List<RecipeIngredient> getRecipeIngredientsByRecipeIdRest(
+    public @ResponseBody List<RecipeIngredient> getAllRecipeIngredientsByRecipeIdRest(
             @PathVariable("recipeId") Long recipeId) {
         return recipeIngredientRepository.findByRecipeId(recipeId);
     }
 
-    /* Etsii reseptin ainesosan id:n perusteella ja palauttaa sen JSON muodossa */
+    /* Returns recipe ingredient by id */
     @GetMapping("/recipeingredient/{id}")
-    public @ResponseBody Optional<RecipeIngredient> findRecipeIngredientRest(
+    public @ResponseBody Optional<RecipeIngredient> getRecipeIngredientByIdRest(
             @PathVariable("id") Long recipeIngredientId) {
         return recipeIngredientRepository.findById(recipeIngredientId);
     }
 
-    /* Tallentaa uuden reseptin ainesosan tietokantaan */
+    /* Saves a recipe ingredient to corresponding recipe-object in the database */
     @PostMapping("/recipeingredients")
-    public @ResponseBody RecipeIngredient savRecipeIngredient(@RequestBody RecipeIngredient recipeIngredient) {
+    public @ResponseBody RecipeIngredient saveRecipeIngredientRest(@RequestBody RecipeIngredient recipeIngredient) {
+        long recipeId = recipeIngredient.getRecipe().getRecipeId();
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe not found with id " + recipeId));
+        recipeIngredient.setRecipe(recipe);
+
         return recipeIngredientRepository.save(recipeIngredient);
     }
 
-    /* Editoi reseptin ainesosan id:n perusteella */
+    /* Patches a recipe by id */
     @PatchMapping("/recipeingredients/{id}")
     public @ResponseBody RecipeIngredient patchRecipeIngredientRest(@PathVariable Long recipeIngredientId,
             @RequestBody RecipeIngredient updatedRecipeIngredient) {
@@ -80,7 +90,7 @@ public class RecipeIngredientRestController {
         }
     }
 
-    /* Poistaa reseptin ainesosan id:n perusteella */
+    /* Deletes a recipe ingredient by id */
     @DeleteMapping("recipeingredients/{id}")
     public ResponseEntity<String> deleteRecipeIngredientByIdRest(@PathVariable("id") Long recipeIngredientId) {
         Optional<RecipeIngredient> recipeIngredientOptional = recipeIngredientRepository.findById(recipeIngredientId);

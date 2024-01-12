@@ -27,25 +27,25 @@ public class IngredientRestController {
     @Autowired
     private IngredientRepository ingredientRepository;
 
-    /* Listaa kaikki Ingredient-luokan javaoliot JSON-listaksi */
+    /* Lists all Ingredient java objects as JSON list */
     @GetMapping("/ingredients")
-    public @ResponseBody List<Ingredient> ingredientListRest() {
+    public @ResponseBody List<Ingredient> getAllIngredientsRest() {
         return (List<Ingredient>) ingredientRepository.findAll();
     }
 
-    /* Etsii ainesosan id:n perusteella ja palauttaa sen JSON-muodossa */
+    /* Searches an ingredient by id */
     @GetMapping("/ingredient/{id}")
-    public @ResponseBody Optional<Ingredient> findIngredientRest(@PathVariable("id") Long ingredientId) {
+    public @ResponseBody Optional<Ingredient> getIngredientByIdRest(@PathVariable("id") Long ingredientId) {
         return ingredientRepository.findById(ingredientId);
     }
 
-    /* Tallentaa uuden ainesosan tietokantaan */
+    /* Save an ingredient to database */
     @PostMapping("/ingredients")
     public @ResponseBody Ingredient saveIngredientRest(@RequestBody Ingredient ingredient) {
         return ingredientRepository.save(ingredient);
     }
 
-    /* Editoi tarvittavat tiedot ainesosaan id:n perusteella */
+    /* Patches an ingredient by id */
     @PatchMapping("/ingredients/{id}")
     public @ResponseBody Ingredient patchIngredientRest(@PathVariable Long ingredientId,
             @RequestBody Ingredient updatedIngredient) {
@@ -64,7 +64,7 @@ public class IngredientRestController {
 
     }
 
-    /* Poistaa ainesosan tietokannasta id:n perusteella */
+    /* Deletes an ingredient by id */
     @DeleteMapping("/ingredient/{id}")
     public ResponseEntity<String> deleteIngredientByIdRest(@PathVariable("id") Long ingredientId) {
         Optional<Ingredient> ingredientOptional = ingredientRepository.findById(ingredientId);

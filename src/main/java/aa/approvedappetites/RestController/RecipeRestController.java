@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import aa.approvedappetites.Domain.Recipe;
 import aa.approvedappetites.Domain.RecipeRepository;
-import aa.approvedappetites.Domain.TypeRepository;
 
 @CrossOrigin
 @Controller
@@ -28,28 +27,25 @@ public class RecipeRestController {
     @Autowired
     private RecipeRepository recipeRepository;
 
-    @Autowired
-    private TypeRepository typeRepository;
-
-    /* Listaa kaikki Recipe-luokan javaoliot JSON-listaksi */
+    /* Lists all java-objects from Recipe class in JSON-list */
     @GetMapping("/recipes")
     public @ResponseBody List<Recipe> getAllRecipesRest() {
         return (List<Recipe>) recipeRepository.findAll();
     }
 
-    /* Etsii reseptin id:n perusteella ja palauttaa sen JSON-muodossa */
+    /* Finds a recipe by id and returns it in JSON-format */
     @GetMapping("/recipe/{id}")
     public @ResponseBody Optional<Recipe> getRecipeByIdRest(@PathVariable("id") Long recipeId) {
         return recipeRepository.findById(recipeId);
     }
 
-    /* Tallentaa uuden reseptin tietokantaan */
+    /* Saves a recipe into database */
     @PostMapping("/recipes")
     public @ResponseBody Recipe saveRecipeRest(@RequestBody Recipe recipe) {
         return recipeRepository.save(recipe);
     }
 
-    /* Editoi tarvittavat tiedot reseptiin id:n perusteella */
+    /* Patches a recipe */
     @PatchMapping("/recipes/{id}")
     public @ResponseBody Recipe patchRecipeRest(@PathVariable Long recipeId, @RequestBody Recipe updatedRecipe) {
         Optional<Recipe> existingRecipeOptional = recipeRepository.findById(recipeId);
@@ -72,7 +68,7 @@ public class RecipeRestController {
             if (updatedRecipe.getNote() != null) {
                 existingRecipe.setNote(updatedRecipe.getNote());
             }
-            if (updatedRecipe.getRecipeIngredients() != null) { /* tässä voi jatkossa tulla ongelmia? */
+            if (updatedRecipe.getRecipeIngredients() != null) { /* check later */
                 existingRecipe.setRecipeIngredients(updatedRecipe.getRecipeIngredients());
             }
             if (updatedRecipe.getType() != null) {
@@ -86,7 +82,7 @@ public class RecipeRestController {
 
     }
 
-    /* Poistaa reseptin tietokannasta id:n perusteella */
+    /* Deletes a recipe from database by id */
     @DeleteMapping("/recipes/{id}")
     public ResponseEntity<String> deleteRecipeByIdRest(@PathVariable("id") Long recipeId) {
         Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
@@ -99,7 +95,7 @@ public class RecipeRestController {
         }
     }
 
-    /* Etsii reseptit tyypin mukaan */
+    /* Lists recipes by type */
     @GetMapping("/recipes/byType/{type}")
     public @ResponseBody List<Recipe> getRecipesByTypeRest(@PathVariable("type") String typeName) {
 
@@ -112,7 +108,7 @@ public class RecipeRestController {
         }
     }
 
-    /* Etsii reseptin nimen mukaan */
+    /* Lists recipes by (partial) name */
     @GetMapping("/recipes/searchByName/{name}")
     public @ResponseBody List<Recipe> getRecipesByName(@PathVariable("name") String searchedName) {
         List<Recipe> recipes = recipeRepository.findByName(searchedName);
