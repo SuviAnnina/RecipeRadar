@@ -143,4 +143,16 @@ public class RecipeRestController {
         return recipes;
     }
 
+    /* Lists recipes by user's name */
+    @GetMapping("/recipes/searchByUserName/{username}")
+    public @ResponseBody List<Recipe> getRecipesByUserName(@PathVariable("username") String userName) {
+        List<Recipe> recipes = recipeRepository.findByUser(userName);
+
+        if (recipes.isEmpty()) {
+            throw new ResourceNotFoundException("No recipes found from user " + userName);
+        }
+
+        return recipes;
+    }
+
 }

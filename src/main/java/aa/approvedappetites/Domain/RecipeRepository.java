@@ -16,4 +16,7 @@ public interface RecipeRepository extends CrudRepository<Recipe, Long> {
     @Query("SELECT r FROM Recipe r WHERE LOWER(r.name) LIKE %:name%")
     List<Recipe> findByName(@Param("name") String name);
 
+    /* Search by user */
+    @Query("SELECT r FROM Recipe r WHERE LOWER(r.user.name) = LOWER(:userName)")
+    List<Recipe> findByUser(@Param("userName") String user);
 }
