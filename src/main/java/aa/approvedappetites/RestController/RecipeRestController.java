@@ -133,7 +133,7 @@ public class RecipeRestController {
 
     /* Lists recipes by (partial) name */
     @GetMapping("/recipes/searchByName/{name}")
-    public @ResponseBody List<Recipe> getRecipesByName(@PathVariable("name") String searchedName) {
+    public @ResponseBody List<Recipe> getRecipesByNameRest(@PathVariable("name") String searchedName) {
         List<Recipe> recipes = recipeRepository.findByName(searchedName);
 
         if (recipes.isEmpty()) {
@@ -145,7 +145,7 @@ public class RecipeRestController {
 
     /* Lists recipes by user's name */
     @GetMapping("/recipes/searchByUserName/{username}")
-    public @ResponseBody List<Recipe> getRecipesByUserName(@PathVariable("username") String userName) {
+    public @ResponseBody List<Recipe> getRecipesByUserNameRest(@PathVariable("username") String userName) {
         List<Recipe> recipes = recipeRepository.findByUser(userName);
 
         if (recipes.isEmpty()) {
